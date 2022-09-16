@@ -1,0 +1,264 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
+
+    <title>Metrics plotting tool &#8212; TSOPPI: TSO500 Post-Processing for InPreD v0.3.0:22-02-28 documentation</title>
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Variant summary creation tool" href="variant_summary_creation.html" />
+    <link rel="prev" title="Getting started" href="getting_started.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="metrics-plotting-tool">
+<h1><strong>Metrics plotting</strong> tool<a class="headerlink" href="#metrics-plotting-tool" title="Permalink to this headline">¶</a></h1>
+<section id="about">
+<h2>About<a class="headerlink" href="#about" title="Permalink to this headline">¶</a></h2>
+<p>The LocalApp software calculates a wide variety of metrics during its analysis
+runs, and when the primary analysis for a given run is finished,
+all the metrics are collected and saved into the <em>MetricsOutput.tsv</em> file
+in the Results sub-directory at the output destination.
+Similarly, some Illumina sequencers generate
+a <em>RunCompletionStatus.xml</em> file with selected sequencing metrics
+in their output directory for a given sequencing run.</p>
+<p>The “process_metrics_files” TSOPPI tool offers visualization of LocalApp-
+and sequencer-generated metrics for sets of samples across multiple sequencing/analysis runs.
+The plots can be useful for identifying sample/run outliers, and for monitoring
+long-terms trends in the sequencing and primary analysis outputs.</p>
+</section>
+<section id="metric-types">
+<h2>Metric types<a class="headerlink" href="#metric-types" title="Permalink to this headline">¶</a></h2>
+<p>Each metric plot title is prefixed with one of the following type identifiers:</p>
+<ul class="simple">
+<li><p><strong>[Sequencer flowcell run metric]</strong> - plots based on values retrieved
+from sequencer-generated <em>RunCompletionStatus.xml</em> files; these metrics are
+generated per flowcell;</p></li>
+<li><p><strong>[LocalApp core X metric]</strong> - the most important metrics retrieved from
+LocalApp-generated <em>MetricsOutput.tsv</em> files; each of these metrics has its
+own associated Illumina-recommended “Guideline Quality Threshold(s)” (Upper-
+and/or Lower- Specification Limits: USL/LSL), which are also displayed on the
+individual plots; the “X” in the prefix can be either “DNA”, “RNA” or “run”,
+with the “run” values jointly representing all demultiplexed samples (DNA + RNA);</p></li>
+<li><p><strong>[InPreD core X metric]</strong> - LocalApp-generated <em>MetricsOutput.tsv</em> values deemed
+important in the InPreD context despite having no associated USL/LSL values;</p></li>
+<li><p><strong>[LocalApp X metric]</strong> - all remaining LocalApp-generated <em>MetricsOutput.tsv</em>
+values.</p></li>
+</ul>
+<blockquote>
+<div><p>Information about LocalApp core metrics can be found in the LocalApp v2.2 manual
+on pages 20-21. These metrics are also represented on sample QC plots generated
+by the <a class="reference internal" href="sample_data_postprocessing.html"><span class="doc">sample data post-processing</span></a> tool.</p>
+</div></blockquote>
+</section>
+<section id="input-files">
+<h2>Input files<a class="headerlink" href="#input-files" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p><strong>[LocalApp_output_directory]/Results/MetricsOutput.tsv</strong> files for n&gt;=1 runs
+(these are specified with the <em>--metrics_file</em> parameter);</p></li>
+<li><p><strong>[sequencer_output_directory]/RunCompletionStatus.xml</strong> files for n&gt;=1 runs
+(these are specified with the <em>--run_completion_status_file</em> parameter).</p></li>
+</ul>
+</section>
+<section id="additional-notes">
+<h2>Additional notes<a class="headerlink" href="#additional-notes" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>The <em>-r</em>/<em>–run_completion_status_file</em> parameter value can be set to &quot;NA&quot;
+whenever the corresponding file is not available (for example NovaSeq machines
+do not even generate this file). Runs with missing values will be omitted in
+the <em>[Sequencer flowcell run metric]</em>-type plots.</p></li>
+<li><p>If creating metrics plots is not desirable (e.g., quickly generating output
+metrics files is the only goal), the &quot;–create_plots&quot; option can be set to &quot;True&quot;.</p></li>
+</ul>
+</section>
+<section id="running-the-tool">
+<h2>Running the tool<a class="headerlink" href="#running-the-tool" title="Permalink to this headline">¶</a></h2>
+<p>Command line options:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>usage: process_metrics_files.py [-h] [-v] -m METRICS_FILE -r
+                             RUN_COMPLETION_STATUS_FILE -l RUN_LABEL -o
+                             OUTPUT_DIRECTORY -s
+                             HOST_SYSTEM_MOUNTING_DIRECTORY
+                             [-c CONTAINER_MOUNTING_DIRECTORY]
+                             [-i HIGHLIGHTED_RUN_LABEL]
+
+Process input metrics files and plot the retrieved metrics data with R (all
+output will be stored in the specified output directory). X&gt;=1 runs can be
+processed together; all run-related parameters need to be supplied exactly X
+times. The order of supplied values matters (e.g., the Nth input metrics file
+will be tied to the Nth supplied run label).
+
+ -m METRICS_FILE, --metrics_file METRICS_FILE
+                     absolute path to the MetricsOutput.tsv file of a given
+                     TSO500 LocalApp analysis run
+ -r RUN_COMPLETION_STATUS_FILE, --run_completion_status_file RUN_COMPLETION_STATUS_FILE
+                     absolute path to the RunCompletionStatus.xml file of a
+                     given TSO500 sequencing run; can be set to &#39;NA&#39; if the file is not available
+ -l RUN_LABEL, --run_label RUN_LABEL
+                     a label that should be used for referring to given run
+                     in the output files and plots
+ -o OUTPUT_DIRECTORY, --output_directory OUTPUT_DIRECTORY
+                     absolute path to the directory in which all output
+                     should be stored
+ -s HOST_SYSTEM_MOUNTING_DIRECTORY, --host_system_mounting_directory HOST_SYSTEM_MOUNTING_DIRECTORY
+                     absolute path to the host system mounting directory;
+                     the specified directory should include all input and
+                     output file paths in its directory tree
+optional arguments:
+ -h, --help          show this help message and exit
+ -v, --version       show program`s version number and exit
+ -c CONTAINER_MOUNTING_DIRECTORY, --container_mounting_directory CONTAINER_MOUNTING_DIRECTORY
+                     container`s inner mounting point; the host system
+                     mounting directory path/prefix will be replaced by the
+                     container mounting directory path in all input and
+                     output file paths (this parameter likely shouldn`t be
+                     changed); default value: /inpred/data
+ -i HIGHLIGHTED_RUN_LABEL, --highlighted_run_label HIGHLIGHTED_RUN_LABEL
+                     label of the run which should be highlighted in the
+                     output plots (if not supplied, the last supplied label
+                     will determine the highlighted run)
+ -n {True,False}, --create_plots {True,False}
+                     True/False value determining whether the output metric plots PDF document
+                     should be created; if set to &quot;False&quot;, only the transposed and merged metrics files will be produced
+</pre></div>
+</div>
+<p>Example invocation using the Docker image:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ [sudo] docker run \
+    --rm \
+    -it \
+    -v /hs_prefix_path:/inpred/data \
+    inpred/tsoppi_main:v0.1 \
+      bash /inpred/user_scripts/process_metrics_files.sh \
+        --metrics_file /hs_prefix_path/analysis/run1/Results/MetricsOutput.tsv \
+        --metrics_file /hs_prefix_path/analysis/run2/Results/MetricsOutput.tsv \
+        --metrics_file /hs_prefix_path/analysis/run3/Results/MetricsOutput.tsv \
+        --run_completion_status_file /hs_prefix_path/sequences/run1/RunCompletionStatus.xml \
+        --run_completion_status_file /hs_prefix_path/sequences/run2/RunCompletionStatus.xml \
+        --run_completion_status_file /hs_prefix_path/sequences/run3/RunCompletionStatus.xml \
+        --run_label run_1 \
+        --run_label run_2 \
+        --run_label run_3 \
+        --output_directory /hs_prefix_path/postprocessing/metrics_plots \
+        --host_system_mounting_directory /hs_prefix_path
+</pre></div>
+</div>
+</section>
+<section id="output-files">
+<h2>Output files<a class="headerlink" href="#output-files" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p><strong>[tool_output_directory]/TSO500_run_metrics.pdf</strong>: the main output file, with metric-wise plots;</p></li>
+<li><p><strong>[tool_output_directory]/intermediate_metrics_files/joint_sequencing_QC_file.tsv</strong>: aggregated sequencing-run metrics for all input <em>RunCompletionStatus.xml</em> files;</p></li>
+<li><p><strong>[tool_output_directory]/intermediate_metrics_files/master_metrics_table.tsv</strong>: aggregated analysis-run metrics for all input <em>MetricsOutput.tsv</em> files;</p></li>
+<li><p><strong>[tool_output_directory]/intermediate_metrics_files/[run_label_N]_metrics.tsv</strong>: parsed and transposed analysis-run metrics table for Nth input <em>MetricsOutput.tsv</em> file (the corresponding <em>run_label</em> value is used in the file name).</p></li>
+</ul>
+<p>(last updated: 2022-03-10)</p>
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">TSOPPI: TSO500 Post-Processing for InPreD</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p><span class="caption-text">Table of contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting started</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#"><strong>Metrics plotting</strong> tool</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#about">About</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#metric-types">Metric types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#input-files">Input files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#additional-notes">Additional notes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#running-the-tool">Running the tool</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#output-files">Output files</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="variant_summary_creation.html"><strong>Variant summary creation</strong> tool</a></li>
+<li class="toctree-l1"><a class="reference internal" href="variant_recurrence_table_creation.html"><strong>Variant recurrence table creation</strong> tool</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sample_data_postprocessing.html"><strong>Sample data post-processing</strong> tool</a></li>
+<li class="toctree-l1"><a class="reference internal" href="inpred_nomenclature.html">InPreD sample ID nomenclature</a></li>
+<li class="toctree-l1"><a class="reference internal" href="software_versions.html">Software versions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="FAQ.html">Frequently asked questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="changelog.html">Change log</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="getting_started.html" title="previous chapter">Getting started</a></li>
+      <li>Next: <a href="variant_summary_creation.html" title="next chapter"><strong>Variant summary creation</strong> tool</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2022, Daniel Vodak.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.4.3</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/metrics_plotting.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
