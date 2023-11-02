@@ -1,0 +1,303 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
+
+    <title>Sample comparison tool &#8212; TSOPPI: TSO500 Post-Processing for InPreD v0.3.0:22-02-28 documentation</title>
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="ICNVA tool" href="ICNVA.html" />
+    <link rel="prev" title="Sample data post-processing tool" href="sample_data_postprocessing.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="sample-comparison-tool">
+<h1><strong>Sample comparison</strong> tool<a class="headerlink" href="#sample-comparison-tool" title="Permalink to this headline">¶</a></h1>
+<section id="about">
+<h2>About<a class="headerlink" href="#about" title="Permalink to this headline">¶</a></h2>
+<p>A single patient might have multiple biopsies/samples sequenced with assays from the TSO500 family (TSO500/TSO500 HT/TSO500 ctDNA).
+In these cases it is usually of interest to track the variant support between the samples.
+The purpose of the Sample comparison tool is to make this tracking work easier.</p>
+</section>
+<section id="functionality-overview">
+<h2>Functionality overview<a class="headerlink" href="#functionality-overview" title="Permalink to this headline">¶</a></h2>
+<p>The tool is meant to compare small variant sets reported for two input samples
+(further referred to as “sample_A” and “sample_B”) sequenced with a TSO500 assay.
+Any combination of TSO500, TSO500 HT and TSO500 ctDNA samples is supported, but prior analysis with
+Illumina’s LocalApp v.2.2 (or Dragen ctDNA pipeline v.2.1) and post-processing
+with TSOPPI’s <a class="reference internal" href="sample_data_postprocessing.html"><span class="doc">sample data post-processing</span></a> tool are required.</p>
+<p>A single plain-text output file with the following contents is generated:</p>
+<ul class="simple">
+<li><p>section [A]: input sample and tool version meta-information;</p></li>
+<li><p>section [B]: an overview of small variant counts for all possible classification combinations (i.e., the number of variants classified as ‘SOM’
+in both samples, the number of variants classfied as ‘SOM’ in one sample and as ‘GL_DB’ in the other sample, etc.);</p></li>
+<li><p>sections [C1] and [C2]: the concordance/mutual recall of likely germline variants (i.e., variants classified as “GL_DB”) reported in the compared samples;</p></li>
+<li><p>section [D]: details about selected ‘noteworthy’ variants reported in the compared samples (please see the ‘Additional notes’ section below regarding the variant selection process); the details include
+per-sample information (read depth, VAF, classification and potential inclusion in a given sample’s TMB calculation by the respective Illumina pipeline),
+as well as generally applicable annotation (selected information from both PCGR and Nirvana output, the latter being limited to HIGH/MODERATE
+impact transcript changes according to <a class="reference external" href="http://mart.ensembl.org/info/genome/variation/prediction/predicted_data.html">Ensembl’s calculated variant consequences</a>).</p></li>
+</ul>
+</section>
+<section id="input-files">
+<h2>Input files<a class="headerlink" href="#input-files" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>LocalApp-/Dragen-generated TMB trace TSV files, one for each input sample
+(e.g., “[LocalApp_output_directory]/Logs_Intermediates/Tmb/[sample_A_ID]/[sample_A_ID].tmb.trace.tsv”
+- please note that the file names differ based on the utilized Illumina pipeline);</p></li>
+<li><p>LocalApp-/Dragen-generated Nirvana annotation JSON files, one for each input sample
+(e.g., “[LocalApp_output_directory]/Logs_Intermediates/Annotation/[sample_A_ID]/[sample_A_ID]_SmallVariants_Annotated.json.gz”);</p></li>
+<li><p>TSOPPI-generated small variant TSV files with the “Class_judgement” column, one for each input sample whose selection mode is set to “reportability”
+(e.g., “[TSOPPI_output_directory_for_sample_A]/[sample_A_ID]_small_variant_table.tsv”);</p></li>
+<li><p>TSOPPI-generated PCGR small variant annotation TSV files, one for each input sample
+(e.g., “[TSOPPI_output_directory_for_sample_A]/[sample_A_ID]_PCGR_1.0.0_all/[sample_A_ID].pcgr_acmg.grch37.snvs_indels.tiers.tsv”).</p></li>
+</ul>
+</section>
+<section id="output-files">
+<h2>Output files<a class="headerlink" href="#output-files" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>a plain-text file with the content as described above, named “[sample_A_ID]_[sample_B_ID]_variant_set_overlaps.txt”
+(sample ID values provided via the “--sample_A_ID” and “--sample_B_ID” parameters will be utilized inside the file and in its filename).</p></li>
+</ul>
+</section>
+<section id="additional-notes">
+<h2>Additional notes<a class="headerlink" href="#additional-notes" title="Permalink to this headline">¶</a></h2>
+<ul>
+<li><p>The concordance analysis consists of two steps:</p>
+<ul class="simple">
+<li><p>identifying validation-eligible germline variants in one of the samples (the ‘source sample’);</p></li>
+<li><p>checking the presence of the identified germline variant in the other sample (the ‘recall sample’).</p></li>
+</ul>
+<p>The whole process is performed twice, with each sample serving once in each role.</p>
+</li>
+<li><p>In order to avoid noise during the concordance analysis, only variants of “sufficient quality” are considered
+by default. The following variant properties are required in the ‘source sample’:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>SNV type (INDELs are omitted);</p></li>
+<li><p>“GL_DB” classification;</p></li>
+<li><p>at least 20 high-quality reads at the variant site;</p></li>
+<li><p>VAF &gt;= 0.15.</p></li>
+</ul>
+</div></blockquote>
+<p>(The only requirement for the ‘recall sample’ is inclusion in the corresponding input *.pcgr_acmg.grch37.snvs_indels.tiers.tsv file.)
+As a consequence, the concordance comparisons aren’t affected by low-level contamination
+(e.g., at 10 % contamination, most contaminant variants should have VAFs considerably below 0.15).</p>
+</li>
+<li><p>An individual has typically between 1100 and 1200 high quality GL_DB variants covered by the TSO500 assay(s).
+Significantly higher variant counts (1500 - 1600) are indicative of substantial contamination.</p></li>
+<li><p>Parameters “--sample_A_variant_selection_mode” and “--sample_B_variant_selection_mode” determine which variants
+will be included in the detailed variant table at the bottom of the output file. Two modes are available
+(a different mode can be selected for each of the compared samples):</p>
+<ul class="simple">
+<li><p>“reportability”: selected variants are required to either have “include” ‘Class_judgement’ status in TSOPPI’s small
+variant table and/or to have a non-empty ‘Mutation_hotspot’ value reported by PCGR; this mode is by default enabled for both input samples;</p></li>
+<li><p>“consequence”: selected variants are required to belong to one of the classes specified by the “--variant_class” parameter
+and to have a MODERATE/HIGH impact consequence in at least one transcript according to the Nirvana annotation
+(please see the Functionality overview section regarding the consequence assessment); this mode is currently recommended for ctDNA samples.</p></li>
+</ul>
+</li>
+<li><p>When comparing a solid sample with a ctDNA sample, the current InPreD practice (as of November 2023)
+is to label the solid sample as “S” and the ctDNA sample as “C”.</p></li>
+<li><p>The detailed table in output section [D] is sorted based on variant consequence and classification in the input samples.
+First, variants with “PCGR_consequence” values other than “x:noncoding_variant” and “synonymous_variant” are listed,
+those are followed by the noncoding and synonymous variants. Within each of those two groups, the ordering follows
+the sample_A-sample-B classification pair ordering as listed in section [B].</p></li>
+</ul>
+</section>
+<section id="running-the-tool">
+<h2>Running the tool<a class="headerlink" href="#running-the-tool" title="Permalink to this headline">¶</a></h2>
+<p>Command line options:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>usage: compare_variant_lists.py [-h] [--version] --sample_A_ID SAMPLE_A_ID --sample_B_ID SAMPLE_B_ID --sample_A_variant_selection_mode {reportability,consequence} --sample_B_variant_selection_mode
+                                {reportability,consequence} --sample_A_pcgr_tsv SAMPLE_A_PCGR_TSV --sample_B_pcgr_tsv SAMPLE_B_PCGR_TSV --sample_A_trace_tsv SAMPLE_A_TRACE_TSV --sample_B_trace_tsv
+                                SAMPLE_B_TRACE_TSV --sample_A_nirvana_json SAMPLE_A_NIRVANA_JSON --sample_B_nirvana_json SAMPLE_B_NIRVANA_JSON --output_file OUTPUT_FILE --host_system_mounting_directory
+                                HOST_SYSTEM_MOUNTING_DIRECTORY [--sample_A_label SAMPLE_A_LABEL] [--sample_B_label SAMPLE_B_LABEL] [--sample_A_tsoppi_svt_tsv SAMPLE_A_TSOPPI_SVT_TSV]
+                                [--sample_B_tsoppi_svt_tsv SAMPLE_B_TSOPPI_SVT_TSV] [--variant_class {SOM,SOM_PCH,GL_P,GL_DB,BL}] [--minimum_read_depth MINIMUM_READ_DEPTH] [--minimum_VAF MINIMUM_VAF]
+                                [--container_mounting_directory CONTAINER_MOUNTING_DIRECTORY]
+
+Compare two samples based on their small variant lists. Assess germline variant correlation, compare somatic variant calls.
+
+  --sample_A_ID SAMPLE_A_ID
+                        ID string for sample A (the value will be used in the output).
+  --sample_B_ID SAMPLE_B_ID
+                        ID string for sample B (the value will be used in the output).
+  --sample_A_pcgr_tsv SAMPLE_A_PCGR_TSV
+                        Absolute path to TSOPPI-generated *.pcgr_acmg.grch37.snvs_indels.tiers.tsv file for sample A.
+  --sample_B_pcgr_tsv SAMPLE_B_PCGR_TSV
+                        Absolute path to TSOPPI-generated *.pcgr_acmg.grch37.snvs_indels.tiers.tsv file for sample B.
+  --sample_A_trace_tsv SAMPLE_A_TRACE_TSV
+                        Absolute path to a TMB trace tsv file generated by an Illumina pipeline for sample A.
+  --sample_B_trace_tsv SAMPLE_B_TRACE_TSV
+                        Absolute path to a TMB trace tsv file generated by an Illumina pipeline for sample B.
+  --sample_A_nirvana_json SAMPLE_A_NIRVANA_JSON
+                        Absolute path to Nirvana-generated json.gz file for sample A.
+  --sample_B_nirvana_json SAMPLE_B_NIRVANA_JSON
+                        Absolute path to Nirvana-generated json.gz file for sample B.
+  --output_file OUTPUT_FILE
+                        Asolute path to the output file.
+  --host_system_mounting_directory HOST_SYSTEM_MOUNTING_DIRECTORY
+                        Absolute path to the host system mounting directory. The specified directory should include all input and output file paths in its directory tree.
+optional arguments:
+  -h, --help            show this help message and exit
+  --version             show program`s version number and exit
+  --sample_A_variant_selection_mode {reportability,consequence}
+                        Method of selecting sample A`s somatic variants for detailed comparison. (default value: &quot;reportability&quot;)
+  --sample_B_variant_selection_mode {reportability,consequence}
+                        Method of selecting sample B`s somatic variants for detailed comparison. (default value: &quot;reportability&quot;)
+  --sample_A_label SAMPLE_A_LABEL
+                        Label string for sample A (the value will be used in the output). (default value: &quot;A&quot;)
+  --sample_B_label SAMPLE_B_LABEL
+                        Label string for sample B (the value will be used in the output). (default value: &quot;B&quot;)
+  --sample_A_tsoppi_svt_tsv SAMPLE_A_TSOPPI_SVT_TSV
+                        Absolute path to TSOPPI-generated small variant table file for sample A. Required if the &quot;--sample_A_variant_selection_mode&quot; is set to &quot;reportability&quot;.
+  --sample_B_tsoppi_svt_tsv SAMPLE_B_TSOPPI_SVT_TSV
+                        Absolute path to TSOPPI-generated small variant table file for sample B. Required if the &quot;--sample_B_variant_selection_mode&quot; is set to &quot;reportability&quot;.
+  --variant_class {SOM,SOM_PCH,GL_P,GL_DB,BL}
+                        In case of samples for which the &quot;consequence&quot; variant selection mode was chosen, only variants of the specified classes will be considered for reporting in the output detailed table.
+                        Multiple values can be specified. (default value: [&quot;SOM&quot;, &quot;SOM_PCH&quot;, &quot;GL_P&quot;])
+  --minimum_read_depth MINIMUM_READ_DEPTH
+                        Minimum required read depth for variants included in the concordance/recall comparisons. Expecting integer values &gt;= 20. (default value: 50)
+  --minimum_VAF MINIMUM_VAF
+                        Minimum required VAF for variants included in the concordance/recall comparisons. Expecting float values in range (0; 1]. (default value: 0.15)
+  --container_mounting_directory CONTAINER_MOUNTING_DIRECTORY
+                        Container`s inner mounting point. The host system mounting directory path/prefix will be replaced by the container mounting directory path in all input and output file paths (this
+                        parameter shouldn&#39;t be changed during regular use). (default value: &quot;/inpred/data&quot;)
+</pre></div>
+</div>
+<p>Example invocation using the Docker image:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ [sudo] docker run \
+    --rm \
+    -it \
+    -v /hs_prefix_path:/inpred/data \
+    inpred/icnva_main:0.2.0 \
+      python /inpred/compare_variant_lists.py \
+        --sample_A_ID tumor_DNA_A \
+        --sample_B_ID tumor_DNA_B \
+        --sample_A_label &quot;S&quot; \
+        --sample_B_label &quot;C&quot; \
+        --sample_A_variant_selection_mode &quot;reportability&quot; \
+        --sample_B_variant_selection_mode &quot;consequence&quot; \
+        --sample_A_tsoppi_svt_tsv /hs_prefix_path/postprocessing/run_A/&lt;tumor_DNA_A&gt;/&lt;tumor_DNA_A&gt;_small_variant_table.tsv \
+        --sample_A_nirvana_json /hs_prefix_path/primary/run_A/Logs_Intermediates/Annotation/&lt;tumor_DNA_A&gt;/&lt;tumor_DNA_A&gt;_SmallVariants_Annotated.json.gz \
+        --sample_B_nirvana_json /hs_prefix_path/primary/run_B/Logs_Intermediates/Annotation/&lt;tumor_DNA_B&gt;/&lt;tumor_DNA_B&gt;_SmallVariants_Annotated.json.gz \
+        --sample_A_trace_tsv /hs_prefix_path/primary/run_A/Logs_Intermediates/Tmb/&lt;tumor_DNA_A&gt;/&lt;tumor_DNA_A&gt;_TMB_Trace.tsv \
+        --sample_B_trace_tsv /hs_prefix_path/primary/run_B/Logs_Intermediates/Tmb/&lt;tumor_DNA_B&gt;/&lt;tumor_DNA_B&gt;.tmb.trace.tsv \
+        --sample_A_pcgr_tsv /hs_prefix_path/postprocessing/run_A/&lt;tumor_DNA_A&gt;/&lt;tumor_DNA_A&gt;_PCGR_1.0.0_all/&lt;tumor_DNA_A&gt;.pcgr_acmg.grch37.snvs_indels.tiers.tsv \
+        --sample_B_pcgr_tsv /hs_prefix_path/postprocessing/run_B/&lt;tumor_DNA_B&gt;/&lt;tumor_DNA_B&gt;_PCGR_1.0.0_all/&lt;tumor_DNA_B&gt;.pcgr_acmg.grch37.snvs_indels.tiers.tsv \
+        --output_file /hs_prefix_path/postprocessing/sample_comparison/&lt;tumor_DNA_A&gt;_&lt;tumor_DNA_B&gt;_variant_set_overlaps.txt \
+        --host_system_mounting_directory &quot;/data&quot;
+</pre></div>
+</div>
+<p>(last updated: 2023-11-02)</p>
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">TSOPPI: TSO500 Post-Processing for InPreD</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p><span class="caption-text">Table of contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="metrics_plotting.html"><strong>Metrics plotting</strong> tool</a></li>
+<li class="toctree-l1"><a class="reference internal" href="variant_summary_creation.html"><strong>Variant summary creation</strong> tool</a></li>
+<li class="toctree-l1"><a class="reference internal" href="variant_recurrence_table_creation.html"><strong>Variant recurrence table creation</strong> tool</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sample_data_postprocessing.html"><strong>Sample data post-processing</strong> tool</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#"><strong>Sample comparison</strong> tool</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#about">About</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#functionality-overview">Functionality overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#input-files">Input files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#output-files">Output files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#additional-notes">Additional notes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#running-the-tool">Running the tool</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="ICNVA.html"><strong>ICNVA</strong> tool</a></li>
+<li class="toctree-l1"><a class="reference internal" href="inpred_nomenclature.html">InPreD sample ID nomenclature</a></li>
+<li class="toctree-l1"><a class="reference internal" href="software_versions.html">Software versions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="FAQ.html">Frequently asked questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="changelog.html">Change log</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="sample_data_postprocessing.html" title="previous chapter"><strong>Sample data post-processing</strong> tool</a></li>
+      <li>Next: <a href="ICNVA.html" title="next chapter"><strong>ICNVA</strong> tool</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2022, Daniel Vodak.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.4.3</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/sample_comparison.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

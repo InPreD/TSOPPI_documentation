@@ -14,6 +14,8 @@ Please refer to the documentation pages of individual tools for details regardin
    variant_summary_creation
    variant_recurrence_table_creation
    sample_data_postprocessing
+   sample_comparison
+   ICNVA
    inpred_nomenclature
    software_versions
    FAQ
@@ -28,4 +30,4 @@ Indices and tables
 .. * :ref:`genindex`
 .. * :ref:`modindex`
 
-(last updated: 2022-03-03)
+(last updated: 2023-10-26)

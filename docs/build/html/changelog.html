@@ -34,6 +34,30 @@
             
   <section id="change-log">
 <h1>Change log<a class="headerlink" href="#change-log" title="Permalink to this headline">¶</a></h1>
+<p>22-09-16 (TSOPPI version remaining at 0.3.2)</p>
+<ul class="simple">
+<li><p>documentation updates:</p>
+<ul>
+<li><p>PCGR and CPSR version numbers in the documentation text have been changed to
+values correct for the 0.3.2 version of TSOPPI (version number 1.0.0 for
+both PCGR and CPSR);</p></li>
+<li><p>the separator expected in the “Variant recurrence table creation” tool’s input
+file has been explicitly specified in the documentation.</p></li>
+</ul>
+</li>
+</ul>
+<p>22-06-07 (TSOPPI version 0.3.2)</p>
+<ul class="simple">
+<li><p>bug fix:</p>
+<ul>
+<li><p>tumor sample variants not present in the provided variant recurrence table
+could cause TSOPPI to crash during sample post-processing;
+the issue should now be fixed, and these novel variants should be labeled with
+&quot;no_recurrence_data&quot; flag in the ‘Class_judgement_comments’ column
+of the variant interpretation table.</p></li>
+</ul>
+</li>
+</ul>
 <p>22-03-20 (TSOPPI version 0.3.1)</p>
 <ul class="simple">
 <li><p>bug fix:</p>
@@ -256,6 +280,8 @@ now show the number of callable samples for given variant position.</p></li>
 <li class="toctree-l1"><a class="reference internal" href="variant_summary_creation.html"><strong>Variant summary creation</strong> tool</a></li>
 <li class="toctree-l1"><a class="reference internal" href="variant_recurrence_table_creation.html"><strong>Variant recurrence table creation</strong> tool</a></li>
 <li class="toctree-l1"><a class="reference internal" href="sample_data_postprocessing.html"><strong>Sample data post-processing</strong> tool</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sample_comparison.html"><strong>Sample comparison</strong> tool</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ICNVA.html"><strong>ICNVA</strong> tool</a></li>
 <li class="toctree-l1"><a class="reference internal" href="inpred_nomenclature.html">InPreD sample ID nomenclature</a></li>
 <li class="toctree-l1"><a class="reference internal" href="software_versions.html">Software versions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="FAQ.html">Frequently asked questions</a></li>

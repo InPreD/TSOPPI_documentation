@@ -1,0 +1,237 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
+
+    <title>ICNVA tool &#8212; TSOPPI: TSO500 Post-Processing for InPreD v0.3.0:22-02-28 documentation</title>
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="InPreD sample ID nomenclature" href="inpred_nomenclature.html" />
+    <link rel="prev" title="Sample comparison tool" href="sample_comparison.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="icnva-tool">
+<h1><strong>ICNVA</strong> tool<a class="headerlink" href="#icnva-tool" title="Permalink to this headline">¶</a></h1>
+<section id="about">
+<h2>About<a class="headerlink" href="#about" title="Permalink to this headline">¶</a></h2>
+<p>A prerequisite for assessment of certain gene properties/states (“high” copy number, loss of heterozygosity [LoH])
+is the accurate determination of sample ploidy and/or allele-specific copy number status in specific genomic regions.
+The ICNVA tool aims to generate the necessary information for input TSO500/TSO500 HT samples.</p>
+</section>
+<section id="functionality-overview">
+<h2>Functionality overview<a class="headerlink" href="#functionality-overview" title="Permalink to this headline">¶</a></h2>
+<p>The tool runs two types of analysis on each input sample:</p>
+<ul class="simple">
+<li><p>Allele-specific copy number analysis performed by <a class="reference external" href="https://bioconductor.org/packages/release/bioc/html/PureCN.html">PureCN</a>.
+(The purpose here is to assist primarily with LoH assessment.)</p></li>
+<li><p>Normalized read coverage (NRC) profile plotting for selected genes (these can help identify/confirm intra-genic duplications/losses).</p></li>
+</ul>
+<p>An in-house set of controls is utilized during both analyses.</p>
+</section>
+<section id="input-files">
+<h2>Input files<a class="headerlink" href="#input-files" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>A fasta file utilized in the initial LocalApp analysis.
+(e.g., “TSO_500_LocalApp_v2.2.0.12/resources/genomes/hg19_hardPAR/genome.fa”);</p></li>
+<li><p>LocalApp-generated analysis directory for a given sample’s sequencing run.</p></li>
+<li><p>[optional] A file with user-defined custom parameters for the PureCN analysis.</p></li>
+<li><p>[optional] A file with user-defined set of genes for the NRC analysis.</p></li>
+</ul>
+</section>
+<section id="output-files">
+<h2>Output files<a class="headerlink" href="#output-files" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>[optional] A directory with intermediate PureCN analysis files (output sub-directory named “TMP”). Once generated, these files can be re-used for re-running PureCN on the same sample with a new parameter set.</p></li>
+<li><p>A directory with PureCN analysis results utilizing the default InPreD parameters (output sub-directory named “PureCN_results_default”).</p></li>
+<li><p>A directory with PureCN analysis results utilizing a set of custom parameters (output sub-directory named “PureCN_results_custom”, the name can be changed with parameter “--purecn_subdirectory_name”).
+A predefined permissive parameter set will be used, unless a user-defined parameter set is provided via the “--purecn_parameter_list” option.</p></li>
+<li><p>A PDF file with NRC profiles for selected genes.</p></li>
+</ul>
+</section>
+<section id="additional-notes">
+<h2>Additional notes<a class="headerlink" href="#additional-notes" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>As of ICNVA tool version 0.2.0, each PureCN analysis results directory contains also</p>
+<ul>
+<li><p>a file (per reported solution) with detailed gene-wise information, useful for LoH-status
+checks across solutions (“&lt;sample_ID&gt;_genes_s1.tsv”, …, “&lt;sample_ID&gt;_genes_s&lt;N&gt;.tsv”);</p></li>
+<li><p>a table that summarizes selected information/metrics across all reported solutions (“&lt;sample_ID&gt;_solution_overview.tsv”).</p></li>
+</ul>
+</li>
+<li><p>It is still possible to run curated PureCN analysis in order to generate complete detailed information for any solution
+(if the gene-wise table automatically generated for each solution does not profide all of the required information). Please use the
+“--curated_output” and “--curated_analysis” parameter pair in such cases.</p></li>
+<li><p>Please note that certain sample properties/quality issues (e.g., low purity, presence of sub-clones, contamination)
+might obscure or dilute the signal of interest, complicating both analysis types.</p></li>
+<li><p>Chromosome overview plots generated by PureCN (files named “&lt;sample_ID&gt;_chromosomes.pdf”) display incorrect segmentation.
+It is recommended to simply ignore these files.</p></li>
+<li><p>The following commands can be run (instead of the “bash /inpred/run_ICNVA.sh” command) in order to view the content of internal configuration files:</p>
+<ul>
+<li><p>“cat /inpred/resources/data/valid_NRC_gene_targets.tsv”: the complete list of genes that can be selected for NRC plotting;</p></li>
+<li><p>“cat /inpred/resources/data/default_NRC_gene_list.tsv”: the default list of genes utilized for NRC plotting (can be changed via the “--nrc_gene_list” option);</p></li>
+<li><p>“cat /inpred/resources/data/recognized_PureCN_options.tsv”: the complete list of recognized PureCN parameters for custom analysis;</p></li>
+<li><p>“cat /inpred/resources/data/default_PureCN_options.tsv”: PureCN parameter settings utilized during default analysis;</p></li>
+<li><p>“cat /inpred/resources/data/custom_PureCN_options.tsv”: PureCN parameter settings utilized during custom analysis (unless specified otherwise with “--purecn_parameter_list”).</p></li>
+</ul>
+</li>
+<li><p>Many of the tools utilized during the ICNVA sample analysis output informative messages to the stderr output together with potential error messages.
+In order to mask uninteresting messages from the error logs, most of the final “LOGS/*stderr.log” files contain only
+messages including strings “error”, “fail” and “fault” (but not “default”). The original/complete error logs in those cases are stored within
+corresponding “LOGS/*stderr.orig.log” files.</p></li>
+</ul>
+</section>
+<section id="running-the-tool">
+<h2>Running the tool<a class="headerlink" href="#running-the-tool" title="Permalink to this headline">¶</a></h2>
+<p>Command line options:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>run_ICNVA.sh [options]
+
+  --help                                       Prints this help message (the program exits).
+
+  Core path options:
+  --output_directory [opath]                   Required. Absolute path to the directory in which all of the output files should be stored. If not existing, the directory will be created.
+  --reference_fasta_file [rff]                 Required. Absolute path to an indexed reference FASTA file (e.g., the LocalApp pipeline&#39;s reference fasta file, which is located in &#39;[LocalApp_directory]/resources/genomes/hg19_hardPAR/genome.fa&#39;).
+  --host_system_mounting_directory [hsmd]      Required. Absolute path to the host system mounting directory; the specified directory should include all input and output file paths in its directory tree.
+
+  Tumor DNA sample related options:
+  --dna_tumor_id [tid]                         Required. ID of the input tumor DNA sample, as used in the LocalApp output files.
+  --dna_tumor_localapp_run_directory [rpath]   Required. Absolute path to main LocalApp output directory generated for the sequencing run containing processed tumor DNA sample.
+
+  Remaining customization options:
+  --purecn_parameter_list [pp]                 Optional. Absolute path to a text file with custom PureCN parameter settings (one parameter [+ its value, where applicable] per line). (default value: &#39;NA&#39; - an internal list will be used)
+  --nrc_gene_list [nrcgl]                      Optional. Absolute path to a list of genes for which normalized read count plots should be generated. (default value: &#39;NA&#39; - an internal list will be used)
+  --remove_temporary_files [True|False]        Optional. A switch enabling/disabling removal of the &quot;TMP&quot; output sub-directory (located directly under the selected output directory). (default value: &#39;True&#39;)
+  --rewrite_output [True|False]                Optional. If set to &#39;True&#39;, previously existing output will be overwritten. (default value: &#39;True&#39;)
+  --curated_output [True|False]                Optional. If set to &#39;True&#39;, detailed output will be created based on the content of previously created/edited output files (rather than for the top solution). (default value: &#39;False&#39;)
+  --curated_analysis [default|custom]          Optional. Which analysis should be curated? (default value: &#39;custom&#39;)
+  --purecn_subdirectory_name [psn]             Optional. Name of the PureCN results sub-directory where results generated with custom parameter settings should be stored (this directory will be placed directly under the selected output directory). Useful when generating PureCN results for multiple option sets. (default value: &#39;PureCN_results_custom&#39;)
+</pre></div>
+</div>
+<p>Example invocation using the Docker image:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ [sudo] docker run \
+    --rm \
+    -it \
+    -v /hs_prefix_path:/inpred/data \
+    inpred/icnva_main:0.2.0 \
+      bash /inpred/run_ICNVA.sh \
+        --host_system_mounting_directory /hs_prefix_path \
+        --reference_fasta_file /hs_prefix_path/TSO_500_LocalApp_v2.2.0.12/resources/genomes/hg19_hardPAR/genome.fa \
+        --output_directory /hs_prefix_path/ICNVA_output/tumor_DNA_A \
+        --dna_tumor_id tumor_DNA_A \
+        --dna_tumor_localapp_run_directory /hs_prefix_path/analysis/run1
+</pre></div>
+</div>
+<p>(last updated: 2023-11-02)</p>
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">TSOPPI: TSO500 Post-Processing for InPreD</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p><span class="caption-text">Table of contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="metrics_plotting.html"><strong>Metrics plotting</strong> tool</a></li>
+<li class="toctree-l1"><a class="reference internal" href="variant_summary_creation.html"><strong>Variant summary creation</strong> tool</a></li>
+<li class="toctree-l1"><a class="reference internal" href="variant_recurrence_table_creation.html"><strong>Variant recurrence table creation</strong> tool</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sample_data_postprocessing.html"><strong>Sample data post-processing</strong> tool</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sample_comparison.html"><strong>Sample comparison</strong> tool</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#"><strong>ICNVA</strong> tool</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#about">About</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#functionality-overview">Functionality overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#input-files">Input files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#output-files">Output files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#additional-notes">Additional notes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#running-the-tool">Running the tool</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="inpred_nomenclature.html">InPreD sample ID nomenclature</a></li>
+<li class="toctree-l1"><a class="reference internal" href="software_versions.html">Software versions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="FAQ.html">Frequently asked questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="changelog.html">Change log</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="sample_comparison.html" title="previous chapter"><strong>Sample comparison</strong> tool</a></li>
+      <li>Next: <a href="inpred_nomenclature.html" title="next chapter">InPreD sample ID nomenclature</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2022, Daniel Vodak.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.4.3</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/ICNVA.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

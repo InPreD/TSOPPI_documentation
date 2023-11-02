@@ -51,7 +51,7 @@ Input files
 -----------
 A single input file is required: A two-field table specifying the VCF
 files that should be used for variant recurrence table construction.
-The two expected fields are:
+The two expected (tab-separated) fields are:
 
   :field 1: an absolute path to a given VCF file
   :field 2: a sample type code specifying whether given VCF represents
