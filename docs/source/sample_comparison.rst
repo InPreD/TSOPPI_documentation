@@ -76,7 +76,8 @@ Additional notes
     (please see the Functionality overview section regarding the consequence assessment); this mode is currently recommended for ctDNA samples.
 
 - When comparing a solid sample with a ctDNA sample, the current InPreD practice (as of November 2023)
-  is to label the solid sample as "S" and the ctDNA sample as "C".
+  is to label the solid sample as "S" and the ctDNA sample as "C". The variant selection mode should be set to "consequence"
+  for the ctDNA sample, while the solid sample should use the default ("reportability") mode.
 - The detailed table in output section [D] is sorted based on variant consequence and classification in the input samples.
   First, variants with "PCGR_consequence" values other than "x:noncoding_variant" and "synonymous_variant" are listed,
   those are followed by the noncoding and synonymous variants. Within each of those two groups, the ordering follows
