@@ -40,31 +40,32 @@ Input files
 
 Output files
 ------------
-- a plain-text file with the content as described above, named "[sample_A_ID]_[sample_B_ID]_variant_set_overlaps.txt"
-  (sample ID values provided via the "-\-sample_A_ID" and "-\-sample_B_ID" parameters will be utilized inside the file and in its filename).
+- a plain-text file with the content as described above (sample ID values provided via the "-\-sample_A_ID"
+  and "-\-sample_B_ID" parameters will be utilized inside the file).
 
 Additional notes
 ----------------
 
-- The concordance analysis consists of two steps:
+- The concordance analysis (as reported on in sections [C1] and [C2]) consists of two steps:
 
   - identifying validation-eligible germline variants in one of the samples (the 'source sample');
-  - checking the presence of the identified germline variant in the other sample (the 'recall sample').
+  - checking the presence of the identified germline variants in the other sample (the 'recall sample').
   
   The whole process is performed twice, with each sample serving once in each role.
 - In order to avoid noise during the concordance analysis, only variants of "sufficient quality" are considered
   by default. The following variant properties are required in the 'source sample':
   
-   - SNV type (INDELs are omitted);
+   - SNV type (INDELs and MNVs are omitted);
    - "GL_DB" classification;
-   - at least 20 high-quality reads at the variant site;
+   - at least 50 high-quality reads at the variant site;
    - VAF >= 0.15.
 
-  (The only requirement for the 'recall sample' is inclusion in the corresponding input \*.pcgr_acmg.grch37.snvs_indels.tiers.tsv file.)
+  (The only variant requirement for the 'recall sample' is inclusion in the corresponding PCGR-generated file
+   '\*.pcgr_acmg.grch37.snvs_indels.tiers.tsv' that is provided as analysis input.)
   As a consequence, the concordance comparisons aren't affected by low-level contamination
   (e.g., at 10 % contamination, most contaminant variants should have VAFs considerably below 0.15).
 - An individual has typically between 1100 and 1200 high quality GL_DB variants covered by the TSO500 assay(s).
-  Significantly higher variant counts (1500 - 1600) are indicative of substantial contamination.
+  Significantly higher variant counts (1500 - 1600) are usually indicative of substantial contamination.
 - Parameters "-\-sample_A_variant_selection_mode" and "-\-sample_B_variant_selection_mode" determine which variants
   will be included in the detailed variant table at the bottom of the output file. Two modes are available
   (a different mode can be selected for each of the compared samples):
@@ -81,7 +82,7 @@ Additional notes
 - The detailed table in output section [D] is sorted based on variant consequence and classification in the input samples.
   First, variants with "PCGR_consequence" values other than "x:noncoding_variant" and "synonymous_variant" are listed,
   those are followed by the noncoding and synonymous variants. Within each of those two groups, the ordering follows
-  the sample_A-sample-B classification pair ordering as listed in section [B].
+  the sample_A-sample-B classification order as listed in output section [B].
 
 Running the tool
 ----------------
@@ -172,4 +173,4 @@ Example invocation using the Docker image:
           --host_system_mounting_directory "/data"
 
 
-(last updated: 2023-11-09)
+(last updated: 2024-02-23)
