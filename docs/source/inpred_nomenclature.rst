@@ -7,6 +7,7 @@ InPreD sample ID nomenclature
 InPreD sample IDs should be recorded with 19 characters, in format *PPPyyyy-Ann-Sxz-Mll*, where:
 
 - **PPP** is a three-letter Project code:
+
   - *IPA*: InPreD AHUS;
   - *IPD*: InPreD OUS;
   - *IPH*: InPreD HUS;
