@@ -48,6 +48,7 @@ InPreD sample IDs should be recorded with 19 characters, in format *PPPyyyy-Ann-
   - *R*: Regional metastasis, naive;
   - *r*: regional metastasis, post-treatment;
   - *T*: Primary tumor;
+  - *X*: unknown;
 
 - **x** is the *(n-1)th* library preparation attempt:
 
@@ -105,8 +106,7 @@ InPreD sample IDs should be recorded with 19 characters, in format *PPPyyyy-Ann-
   - *27*: Thymus;
   - *28*: Thyroid;
   - *29*: Uterus;
-  - *30*: Vulva/Vagina.
-
-*X* can be used to replace any missing (yet unknown) information.
+  - *30*: Vulva/Vagina;
+  - *XX*: unknown.
 
 (last updated: 2024-12-05)

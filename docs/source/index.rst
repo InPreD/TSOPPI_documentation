@@ -16,6 +16,7 @@ Please refer to the documentation pages of individual tools for details regardin
    sample_data_postprocessing
    sample_comparison
    ICNVA
+   SADET
    inpred_nomenclature
    software_versions
    FAQ
@@ -30,4 +31,4 @@ Indices and tables
 .. * :ref:`genindex`
 .. * :ref:`modindex`
 
-(last updated: 2023-10-26)
+(last updated: 2024-12-05)
