@@ -16,9 +16,9 @@ InPreD sample IDs should be recorded with 19 characters, in format *PPPyyyy-Ann-
 - **yyyy** is a four-digit patient code (all samples of a given patient should have the same patient code within a specific project);
 - **A** is a single-letter nucleic acid input type code:
 
+  - *C*: Cell-free samples;
   - *D*: DNA;
   - *R*: RNA;
-  - *C*: Cell-free samples;
 
 - **nn** is a two-digit assay type code:
 
@@ -68,8 +68,8 @@ InPreD sample IDs should be recorded with 19 characters, in format *PPPyyyy-Ann-
   - *A*: Archived (FFPE);
   - *B*: Blood;
   - *C*: Cytology;
-  - *F*: fresh Frozen;
   - *E*: Extramedullary;
+  - *F*: fresh Frozen;
   - *M*: fresh bone Marrow;
   - *S*: buccal Swab;
 
