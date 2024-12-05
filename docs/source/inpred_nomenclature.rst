@@ -2,57 +2,75 @@
 InPreD sample ID nomenclature
 =============================
 
-InPreD sample IDs should be recorded with 19 characters, in format *PPPyyyy-Ann-Bpq-Cll*, where:
+(v.3, December 2024)
 
-- **PPP** is a three-letter project name (*IPD* in case of the current Oslo InPreD project);
+InPreD sample IDs should be recorded with 19 characters, in format *PPPyyyy-Ann-Sxz-Mll*, where:
+
+- **PPP** is a three-letter Project code:
+  - *IPA*: InPreD AHUS;
+  - *IPD*: InPreD OUS;
+  - *IPH*: InPreD HUS;
+  - *IPO*: InPreD St. Olav;
+
 - **yyyy** is a four-digit patient code (all samples of a given patient should have the same patient code within a specific project);
-- **A** is a single-letter nucleic acid type code:
+- **A** is a single-letter nucleic acid input type code:
 
   - *D*: DNA;
   - *R*: RNA;
-  - *C*: cell-free samples;
+  - *C*: Cell-free samples;
 
 - **nn** is a two-digit assay type code:
 
-  - *01*: TSO500 DNA assay;
+  - *01*: TSO500 DNA;
   - *02*: `Archer FusionPlex Lung assay <https://archerdx.com/research-products/solid-tumor-research/fusionplex-lung/>`_;
-  - *03*: TSO500 RNA assay;
-  - *50*: Twist Human Core Exome Plus kit (DNA);
-  - *51*: TruSeq Stranded mRNA kit;
+  - *03*: TSO500 RNA;
+  - *04*: EPIC DNA methylation;
+  - *05*: whole-genome DNA sequencing (WGS);
+  - *06*: TSO500 HRD (TSO500 solid + HRD);
+  - *07*: whole-transcriptome RNA sequencing (WTS);
+  - *50*: [external] Twist Human Core Exome Plus (DNA);
+  - *51*: [external] TruSeq Stranded mRNA;
 
-- **B** is a single-letter sample type code:
+- **S** is a single-letter sample type code:
 
-  - *N*: normal/control;
-  - *P*: primary tumor, naive;
-  - *p*: primary tumor, post-treatment;
-  - *R*: regional metastasis, naive;
-  - *r*: regional metastasis, post-treatment;
-  - *D*: distal metastasis, naive;
+  - *A*: post Allotransplantation;
+  - *C*: Cell-line;
+  - *D*: Distal metastasis, naive;
   - *d*: distal metastasis, post-treatment;
-  - *C*: cell-line;
-  - *L*: liquid;
-  - *T*: tumor [deprecated];
-  - *M*: metastasis [deprecated];
+  - *E*: naive;
+  - *e*: post treatment;
+  - *L*: Liquid;
+  - *M*: Metastasis;
+  - *N*: Normal/control;
+  - *P*: Primary tumor, naive;
+  - *p*: primary tumor, post-treatment;
+  - *R*: Regional metastasis, naive;
+  - *r*: regional metastasis, post-treatment;
+  - *T*: Primary tumor;
 
-- **p** is the *(n-1)th* library preparation attempt:
+- **x** is the *(n-1)th* library preparation attempt:
 
   -	*0*: first try;
   - *1*: second try (e.g., after cleaning, new extraction);
-  - *2*: third try (ex: cleaning, new extraction++);
+  - *2*: third try;
   - ...
+  - *9*: validation/verification test;
 
-- **q** is the *nth* biological replicate (e.g., using a different block or stock):
+- **z** is the *nth* biological replicate (e.g., using a different block or stock):
 
   -	*1*
   - *2*
   - ...
 
-- **C** is a single-letter code for sample material:
+- **M** is a single-letter code for sample material:
 
-  - *A*: archived (FFPE);
-  - *B*: blood;
-  - *C*: cytology;
-  - *F*: fresh frozen;
+  - *A*: Archived (FFPE);
+  - *B*: Blood;
+  - *C*: Cytology;
+  - *F*: fresh Frozen;
+  - *E*: Extramedullary;
+  - *M*: fresh bone Marrow;
+  - *S*: buccal Swab;
 
 - **ll** is a two-digit code for tumor site (these codes are adopted from `PCGR <https://github.com/sigven/pcgr>`_):
 
@@ -90,4 +108,4 @@ InPreD sample IDs should be recorded with 19 characters, in format *PPPyyyy-Ann-
 
 *X* can be used to replace any missing (yet unknown) information.
 
-(last updated: 2022-03-03)
+(last updated: 2024-12-05)
