@@ -76,9 +76,9 @@ Command line options:
 
 .. code-block::
 
-  usage: extract_IMPRESS_sample_data.py [-h] [--version] --input_data_directory INPUT_DATA_DIRECTORY --gpg_password_file GPG_PASSWORD_FILE --sample_ID_list SAMPLE_ID_LIST --output_directory OUTPUT_DIRECTORY
-                                        --host_system_mounting_directory HOST_SYSTEM_MOUNTING_DIRECTORY [--input_type {LocalApp,TSOPPI}] [--generate_export_script_only] [--require_inpred_nomenclature]
-                                        [--archive_level_md5sum] [--output_file_prefix OUTPUT_FILE_PREFIX] [--rewrite_output] [--container_mounting_directory CONTAINER_MOUNTING_DIRECTORY]
+  usage: SADET.py [-h] [--version] --input_data_directory INPUT_DATA_DIRECTORY --gpg_password_file GPG_PASSWORD_FILE --sample_ID_list SAMPLE_ID_LIST --output_directory OUTPUT_DIRECTORY
+                  --host_system_mounting_directory HOST_SYSTEM_MOUNTING_DIRECTORY [--input_type {LocalApp,TSOPPI}] [--generate_export_script_only] [--require_inpred_nomenclature]
+                  [--archive_level_md5sum] [--output_file_prefix OUTPUT_FILE_PREFIX] [--rewrite_output] [--container_mounting_directory CONTAINER_MOUNTING_DIRECTORY]
 
   Extract data of specified patients (from LocalApp of TSOPPI output).
 
@@ -131,4 +131,4 @@ Example invocation using the Docker image:
     --require_inpred_nomenclature \
     --output_file_prefix 240512_A09999_0001_BBBBBBBBB
 
-(last updated: 2024-12-08)
+(last updated: 2024-12-09)
