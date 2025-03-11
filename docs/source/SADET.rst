@@ -74,8 +74,8 @@ Running the tool
 ----------------
 Command line options:
 
-::
-
+.. code-block::
+   
   usage: SADET.py [-h] [--version] --input_data_directory INPUT_DATA_DIRECTORY --gpg_password_file GPG_PASSWORD_FILE --sample_ID_list SAMPLE_ID_LIST --output_directory OUTPUT_DIRECTORY
                 --input_type {LocalApp,TSOPPI} --host_system_mounting_directory HOST_SYSTEM_MOUNTING_DIRECTORY [--output_file_prefix OUTPUT_FILE_PREFIX] [--generate_export_script_only]
                 [--parallel_export_and_md5sum] [--require_inpred_nomenclature] [--archive_level_md5sum] [--rewrite_output] [--container_mounting_directory CONTAINER_MOUNTING_DIRECTORY]
@@ -84,7 +84,7 @@ Command line options:
 
   options:
     -h, --help            show this help message and exit
-    --version             show program's version number and exit
+    --version             show program`s version number and exit
     --input_data_directory INPUT_DATA_DIRECTORY
                           Absolute path to a LocalApp or TSOPPI output directory (from which data should be extracted).
     --gpg_password_file GPG_PASSWORD_FILE
@@ -92,8 +92,8 @@ Command line options:
                           first line. At least 16 characters (including a number, a small letter, a capital letter and an underscore) are recommended. Whitespace characters are not allowed.
     --sample_ID_list SAMPLE_ID_LIST
                           Absolute path to a text file specifying the IDs of samples whose data should be extracted. A header-enabled tab-seperated file with at least two columns is expected on input (the
-                          column order does not matter). A column titled "target_ID" should specify the ID strings. A column titled "matching_method" should specify an ID-matching method to be used with the
-                          corresponding ID (e.g., "prefix").
+                          column order does not matter). A column titled 'target_ID' should specify the ID strings. A column titled 'matching_method' should specify an ID-matching method to be used with the
+                          corresponding ID (e.g., 'prefix').
     --output_directory OUTPUT_DIRECTORY
                           Absolute path to the directory in which all of the output files should be stored. If not existing, the directory will be created.
     --input_type {LocalApp,TSOPPI}
@@ -113,12 +113,12 @@ Command line options:
                           Whether the md5sum should be created on the final tar.gpg archive instead of being creating on individual files. (disabled by default)
     --rewrite_output      Allow rewriting already existing output files. (disabled by default)
     --container_mounting_directory CONTAINER_MOUNTING_DIRECTORY
-                          Container's inner mounting point. The host system mounting directory path/prefix will be replaced by the container mounting directory path in all input and output file paths (this
-                          parameter shouldn't be changed during regular use). (default value: /inpred/data)
+                          Container`s inner mounting point. The host system mounting directory path/prefix will be replaced by the container mounting directory path in all input and output file paths (this
+                          parameter shouldn`t be changed during regular use). (default value: /inpred/data)
 
 Example invocation using the Docker image:
 
-::
+.. code-block::
 
   $ [sudo] docker run \
     --rm \
