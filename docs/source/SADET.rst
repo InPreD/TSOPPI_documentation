@@ -84,7 +84,7 @@ Command line options:
 
   options:
     -h, --help            show this help message and exit
-    --version             show program's version number and exit
+    --version             show program\'s version number and exit
     --input_data_directory INPUT_DATA_DIRECTORY
                           Absolute path to a LocalApp or TSOPPI output directory (from which data should be extracted).
     --gpg_password_file GPG_PASSWORD_FILE
@@ -113,8 +113,8 @@ Command line options:
                           Whether the md5sum should be created on the final tar.gpg archive instead of being creating on individual files. (disabled by default)
     --rewrite_output      Allow rewriting already existing output files. (disabled by default)
     --container_mounting_directory CONTAINER_MOUNTING_DIRECTORY
-                          Container's inner mounting point. The host system mounting directory path/prefix will be replaced by the container mounting directory path in all input and output file paths (this
-                          parameter shouldn't be changed during regular use). (default value: /inpred/data)
+                          Container\'s inner mounting point. The host system mounting directory path/prefix will be replaced by the container mounting directory path in all input and output file paths (this
+                          parameter shouldn\'t be changed during regular use). (default value: /inpred/data)
 
 Example invocation using the Docker image:
 
