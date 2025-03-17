@@ -2,7 +2,7 @@
 InPreD sample ID nomenclature
 =============================
 
-(v.3, December 2024)
+(v.4, March 17 2025)
 
 InPreD sample IDs should be recorded with 19 characters, in format *PPPyyyy-Ann-Sxz-Mll*, where:
 
@@ -73,6 +73,7 @@ InPreD sample IDs should be recorded with 19 characters, in format *PPPyyyy-Ann-
   - *F*: fresh Frozen;
   - *M*: fresh bone Marrow;
   - *S*: buccal Swab;
+  - *X*: unknown.
 
 - **ll** is a two-digit code for tumor site (these codes are adopted from `PCGR <https://github.com/sigven/pcgr>`_):
 
@@ -109,4 +110,4 @@ InPreD sample IDs should be recorded with 19 characters, in format *PPPyyyy-Ann-
   - *30*: Vulva/Vagina;
   - *XX*: unknown.
 
-(last updated: 2024-12-05)
+(last updated: 2025-03-17)
